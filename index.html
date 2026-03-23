@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Stacked Learning | Gas Turbine Lube Oil Systems</title>
+
+    <meta property="og:description" content= "Stacked Learning offers High-End Engineering Principles via interactive and globally accessible modules in forms of games and interactive simullations/learnings.">
+    <meta property="og:image" content="https://stacked-learning.com/wp-content/uploads/2021/12/Lube-Oil-Banner-Photo.jpg">
+    <meta property="og:type" content="website">
+    
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+  </head>
+  <body style="background-color:#151821;">
+    <div id="unity-container" class="unity-desktop">
+      <canvas id="unity-canvas" width=1024 height=576></canvas>
+      <div id="unity-loading-bar">
+        <div width=200>
+          <p class="load_warning" width=200>Please wait while the module loads. This may take a few minutes...</p>
+        </div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+      </div>
+      <div id="unity-mobile-warning">
+        Mobile device detected: Rotate to horizontal mode. [[ Use PC for best experience ]]
+      </div>
+      <div id="unity-footer">
+        <div id="unity-fullscreen-button"></div>
+      </div>
+    </div>
+        <div id="unity-build-title">Gas Turbine Lube Oil Systems</div>
+      </div>
+    </div>
+    <script>
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/3f410df919b4cc7192afaedff38fb40c.loader.js";
+      var config = {
+        dataUrl: buildUrl + "/bf45eabb67bffb02bde5697b0db2a69a.data.unityweb",
+        frameworkUrl: buildUrl + "/c642e2314811a5af0581ce69fb28cd86.framework.js.unityweb",
+        codeUrl: buildUrl + "/03b28c10097a43998d56623b5e5385bb.wasm.unityweb",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "Stacked Learning",
+        productName: "Gas Turbine Lube Oil Systems",
+        productVersion: "2025-10-29",
+      };
+
+      var container = document.querySelector("#unity-container");
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingBar = document.querySelector("#unity-loading-bar");
+      var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+      var mobileWarning = document.querySelector("#unity-mobile-warning");
+
+      // By default Unity keeps WebGL canvas render target size matched with
+      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
+      // Set this to false if you want to decouple this synchronization from
+      // happening inside the engine, and you would instead like to size up
+      // the canvas DOM size and WebGL render target sizes yourself.
+      // config.matchWebGLToCanvasSize = false;
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        container.className = "unity-mobile";
+        // Avoid draining fillrate performance on mobile devices,
+        // and default/override low DPI mode on mobile browsers.
+        config.devicePixelRatio = 1;
+        mobileWarning.style.display = "block";
+        setTimeout(() => {
+          mobileWarning.style.display = "none";
+        }, 5000);
+      } else {
+        canvas.style.height = "100%";
+        canvas.style.aspectRatio = 16/9;
+        
+        //canvas.style.width = "1024px";
+        //canvas.style.height = "576px";
+      }
+
+      document.getElementById("unity-container").style.width = "100%";
+      //document.getElementById("unity-container").style.height = "100%";
+      document.getElementById("unity-container").style.aspectRatio = 16/9;
+      
+      loadingBar.style.display = "block";
+
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          progressBarFull.style.width = 100 * progress + "%";
+        }).then((unityInstance) => {
+          loadingBar.style.display = "none";
+          fullscreenButton.onclick = () => {
+            unityInstance.SetFullscreen(1);
+          };
+        }).catch((message) => {
+          alert(message);
+        });
+      };
+      document.body.appendChild(script);
+    </script>
+  </body>
+</html>
