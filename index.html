@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Stacked Learning | Gas Turbine Lube Oil Systems</title>
+    <title>Stacked Learning | Gas Turbine Lube Oil Systems Varnish Fluitec</title>
 
     <meta property="og:description" content= "Stacked Learning offers High-End Engineering Principles via interactive and globally accessible modules in forms of games and interactive simullations/learnings.">
     <meta property="og:image" content="https://stacked-learning.com/wp-content/uploads/2021/12/Lube-Oil-Banner-Photo.jpg">
@@ -14,6 +14,19 @@
   </head>
   <body style="background-color:#151821;">
     <div id="unity-container" class="unity-desktop">
+      <div id="unity-gate" class="unity-gate">
+        <div class="unity-gate-card">
+          <p class="unity-gate-kicker">Protected Module</p>
+          <h1 class="unity-gate-title">Enter password to continue</h1>
+          <p class="unity-gate-copy">Use the access password supplied for this module.</p>
+          <form id="unity-password-form" class="unity-password-form">
+            <label class="unity-gate-label" for="unity-password-input">Password</label>
+            <input id="unity-password-input" class="unity-password-input" type="password" autocomplete="current-password">
+            <button id="unity-password-button" class="unity-password-button" type="submit">Unlock Module</button>
+          </form>
+          <p id="unity-password-error" class="unity-password-error" role="alert" aria-live="polite"></p>
+        </div>
+      </div>
       <canvas id="unity-canvas" width=1024 height=576></canvas>
       <div id="unity-loading-bar">
         <div width=200>
@@ -28,22 +41,20 @@
       </div>
       <div id="unity-footer">
         <div id="unity-fullscreen-button"></div>
-      </div>
-    </div>
-        <div id="unity-build-title">Gas Turbine Lube Oil Systems</div>
+        <div id="unity-build-title">Gas Turbine Lube Oil Systems Varnish Fluitec</div>
       </div>
     </div>
     <script>
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/3f410df919b4cc7192afaedff38fb40c.loader.js";
+      var loaderUrl = buildUrl + "/579954db5da074a8d09c554b095b712b.loader.js";
       var config = {
-        dataUrl: buildUrl + "/bf45eabb67bffb02bde5697b0db2a69a.data.unityweb",
-        frameworkUrl: buildUrl + "/c642e2314811a5af0581ce69fb28cd86.framework.js.unityweb",
-        codeUrl: buildUrl + "/03b28c10097a43998d56623b5e5385bb.wasm.unityweb",
+        dataUrl: buildUrl + "/b0ea7baaedcbcc213740611288040f4f.data.unityweb",
+        frameworkUrl: buildUrl + "/65ecf4953810e88b562ddad5a37f3146.framework.js.unityweb",
+        codeUrl: buildUrl + "/079dc191d2adb8647e39a7f322bff337.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "Stacked Learning",
-        productName: "Gas Turbine Lube Oil Systems",
-        productVersion: "2025-10-29",
+        productName: "Gas Turbine Lube Oil Systems Varnish Fluitec",
+        productVersion: "2026-03-24",
       };
 
       var container = document.querySelector("#unity-container");
@@ -52,6 +63,75 @@
       var progressBarFull = document.querySelector("#unity-progress-bar-full");
       var fullscreenButton = document.querySelector("#unity-fullscreen-button");
       var mobileWarning = document.querySelector("#unity-mobile-warning");
+      var gate = document.querySelector("#unity-gate");
+      var passwordForm = document.querySelector("#unity-password-form");
+      var passwordInput = document.querySelector("#unity-password-input");
+      var passwordButton = document.querySelector("#unity-password-button");
+      var passwordError = document.querySelector("#unity-password-error");
+      var accessSessionKey = "unity-access:" + config.companyName + ":" + config.productName;
+      // Replace this with the SHA-256 hash of the password you want to require.
+      var passwordHash = "454435e7a92e6ae2ea9e0e32d66be9c744176a27f69df6655107087f0bed119e";
+      var unityHasStarted = false;
+
+      function setPasswordError(message) {
+        passwordError.textContent = message;
+      }
+
+      function rememberSessionAccess() {
+        try {
+          sessionStorage.setItem(accessSessionKey, "true");
+        } catch (error) {
+          console.warn("Unable to persist password state for this session.", error);
+        }
+      }
+
+      function hasSessionAccess() {
+        try {
+          return sessionStorage.getItem(accessSessionKey) === "true";
+        } catch (error) {
+          console.warn("Unable to read password state for this session.", error);
+          return false;
+        }
+      }
+
+      async function sha256Hex(value) {
+        var encodedValue = new TextEncoder().encode(value);
+        var digest = await crypto.subtle.digest("SHA-256", encodedValue);
+        return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
+      }
+
+      function startUnity() {
+        if (unityHasStarted) {
+          return;
+        }
+
+        unityHasStarted = true;
+        loadingBar.style.display = "block";
+
+        var script = document.createElement("script");
+        script.src = loaderUrl;
+        script.onload = () => {
+          createUnityInstance(canvas, config, (progress) => {
+            progressBarFull.style.width = 100 * progress + "%";
+          }).then((unityInstance) => {
+            loadingBar.style.display = "none";
+            fullscreenButton.onclick = () => {
+              unityInstance.SetFullscreen(1);
+            };
+          }).catch((message) => {
+            alert(message);
+          });
+        };
+        document.body.appendChild(script);
+      }
+
+      function unlockGate() {
+        gate.classList.add("is-hidden");
+        setPasswordError("");
+        passwordInput.value = "";
+        rememberSessionAccess();
+        startUnity();
+      }
 
       // By default Unity keeps WebGL canvas render target size matched with
       // the DOM size of the canvas element (scaled by window.devicePixelRatio)
@@ -80,24 +160,54 @@
       document.getElementById("unity-container").style.width = "100%";
       //document.getElementById("unity-container").style.height = "100%";
       document.getElementById("unity-container").style.aspectRatio = 16/9;
-      
-      loadingBar.style.display = "block";
 
-      var script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
-          progressBarFull.style.width = 100 * progress + "%";
-        }).then((unityInstance) => {
-          loadingBar.style.display = "none";
-          fullscreenButton.onclick = () => {
-            unityInstance.SetFullscreen(1);
-          };
-        }).catch((message) => {
-          alert(message);
-        });
-      };
-      document.body.appendChild(script);
+      passwordForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        setPasswordError("");
+
+        if (passwordHash === "REPLACE_WITH_SHA256_HASH") {
+          setPasswordError("Set a password hash in index.html before publishing.");
+          return;
+        }
+
+        if (!passwordInput.value) {
+          setPasswordError("Enter the password.");
+          passwordInput.focus();
+          return;
+        }
+
+        passwordButton.disabled = true;
+        passwordInput.disabled = true;
+        var shouldSelectPassword = false;
+
+        try {
+          var submittedHash = await sha256Hex(passwordInput.value);
+          if (submittedHash === passwordHash.toLowerCase()) {
+            unlockGate();
+            return;
+          }
+
+          setPasswordError("Incorrect password.");
+          shouldSelectPassword = true;
+        } catch (error) {
+          console.error(error);
+          setPasswordError("Password verification is not available in this browser.");
+        }
+
+        passwordButton.disabled = false;
+        passwordInput.disabled = false;
+        if (shouldSelectPassword) {
+          passwordInput.select();
+        } else {
+          passwordInput.focus();
+        }
+      });
+
+      if (hasSessionAccess()) {
+        unlockGate();
+      } else {
+        passwordInput.focus();
+      }
     </script>
   </body>
 </html>
